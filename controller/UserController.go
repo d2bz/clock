@@ -19,9 +19,10 @@ func Register(ctx *gin.Context) {
 	telephone := ctx.PostForm("telephone")
 	password := ctx.PostForm("password")
 
-	println("用户：", name)
-	println("号码：", telephone)
-	println("密码：", password)
+	//println("用户：", name)
+	//println("号码：", telephone)
+	//println("密码：", password)
+
 	//数据验证
 	if len(telephone) != 11 {
 		//ctx.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "手机号必须为11位"})
@@ -104,8 +105,9 @@ func Login(ctx *gin.Context) {
 	//	"data": gin.H{"token": token},
 	//	"msg":  "登录成功",
 	//})
+	tel := user.Telephone
 	common.Success(ctx, "登录成功", 1)
-	setCookie(name, ctx)
+	setCookie(tel, ctx)
 }
 
 // 判断手机号是否存在
@@ -118,10 +120,10 @@ func isTelephoneExist(db *gorm.DB, telephone string) bool {
 	return false
 }
 
-func setCookie(uname string, c *gin.Context) {
+func setCookie(tel string, c *gin.Context) {
 	cookie := &http.Cookie{
-		Name:     "userName",
-		Value:    uname,
+		Name:     "Telephone",
+		Value:    tel,
 		Expires:  time.Now().Add(24 * time.Hour),
 		HttpOnly: true,
 	}

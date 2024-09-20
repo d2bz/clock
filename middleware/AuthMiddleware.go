@@ -8,7 +8,7 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		cookie, err := context.Request.Cookie("userName")
+		cookie, err := context.Request.Cookie("Telephone")
 		if err != nil {
 			if errors.Is(err, http.ErrNoCookie) {
 				context.JSON(http.StatusUnauthorized, gin.H{
@@ -25,8 +25,8 @@ func AuthMiddleware() gin.HandlerFunc {
 			context.Abort()
 			return
 		}
-		userName := cookie.Value
-		context.Set("user_name", userName)
+		userTel := cookie.Value
+		context.Set("user_tel", userTel)
 		context.Next()
 	}
 }

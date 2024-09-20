@@ -9,13 +9,13 @@ import (
 )
 
 func Start(c *gin.Context) {
-	uname, _ := c.Get("user_name")
+	tel, _ := c.Get("user_tel")
 	db := common.GetDB()
 	currentDate := time.Now().Format("2006-01-02")
 	currentTime := time.Now().Format("15:04:05")
 	// 查询当前用户当天是否有打卡记录，有则更新，无则新增
 	var duration model.Duration
-	db.Where("name = ? AND date = ?", uname, currentDate).First(&duration)
+	db.Where("telephone = ? AND date = ?", tel, currentDate).First(&duration)
 	// 开始时间不为空，说明正在计时中
 	if duration.StartTime != "" {
 		common.Error(c, "已完成开始打卡")
@@ -29,7 +29,7 @@ func Start(c *gin.Context) {
 	}
 	// 未打过卡就新增本日记录
 	newDur := model.Duration{
-		Name:      uname.(string),
+		Tel:       tel.(string),
 		Date:      currentDate,
 		StartTime: currentTime,
 		Dur:       0,
@@ -39,13 +39,13 @@ func Start(c *gin.Context) {
 }
 
 func End(c *gin.Context) {
-	uname, _ := c.Get("user_name")
+	tel, _ := c.Get("user_tel")
 	db := common.GetDB()
 	currentDate := time.Now().Format("2006-01-02")
 	currentTime := time.Now().Format("15:04:05")
 	// 查询当前用户当天是否有打卡记录
 	var duration model.Duration
-	db.Where("name = ? AND date = ?", uname, currentDate).First(&duration)
+	db.Where("telephone = ? AND date = ?", tel, currentDate).First(&duration)
 	// 提示未进行开始打卡
 	if duration.StartTime == "" {
 		common.Error(c, "未进行开始打卡")
@@ -69,12 +69,12 @@ func End(c *gin.Context) {
 	// 返回具体时分秒
 	h := dur / 3600
 	m := (dur % 3600) / 60
-	s := dur % 60
+	//s := dur % 60
 	c.JSON(http.StatusOK, gin.H{
 		"code":    200,
 		"msg":     "结束打卡成功",
 		"hours":   h,
 		"minutes": m,
-		"seconds": s,
+		//"seconds": s,
 	})
 }
