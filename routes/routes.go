@@ -14,7 +14,7 @@ func CollectRoute(r *gin.Engine) *gin.Engine {
 	public := r.Group("/public")
 	public.Use(middleware.AuthMiddleware())
 	public.POST("/start", controller.Start)
-	public.GET("/end", controller.End)
+	public.POST("/end", controller.End)
 	public.GET("/rank", controller.Rank)
 	return r
 }

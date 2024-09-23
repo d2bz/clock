@@ -11,10 +11,10 @@ var DB *gorm.DB
 
 // InitDB 开启连接池
 func InitDB() *gorm.DB {
-	host := "116.205.189.126"
+	host := "139.9.103.236"
 	port := "3306"
 	database := "clock-go"
-	username := "clock"
+	username := "root"
 	password := "clock1234"
 	charset := "utf8"
 	args := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=True&loc=Local",
