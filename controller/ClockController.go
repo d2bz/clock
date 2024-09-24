@@ -3,13 +3,15 @@ package controller
 import (
 	"clock/common"
 	"clock/model"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Start(c *gin.Context) {
-	tel, _ := c.Get("user_tel")
+	curUser, _ := c.Get("curUser")
+	tel := curUser.(model.User).Telephone
 	db := common.GetDB()
 	currentDate := time.Now().Format("2006-01-02")
 	currentTime := time.Now().Format("15:04:05")
@@ -29,7 +31,7 @@ func Start(c *gin.Context) {
 	}
 	// 未打过卡就新增本日记录
 	newDur := model.Duration{
-		Tel:       tel.(string),
+		Tel:       tel,
 		Date:      currentDate,
 		StartTime: currentTime,
 		Dur:       0,
@@ -39,7 +41,8 @@ func Start(c *gin.Context) {
 }
 
 func End(c *gin.Context) {
-	tel, _ := c.Get("user_tel")
+	curUser, _ := c.Get("curUser")
+	tel := curUser.(model.User).Telephone
 	db := common.GetDB()
 	currentDate := time.Now().Format("2006-01-02")
 	currentTime := time.Now().Format("15:04:05")
@@ -70,7 +73,6 @@ func End(c *gin.Context) {
 		"StartTime": "",
 		"Dur":       todayDur,
 	})
-	
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    200,
