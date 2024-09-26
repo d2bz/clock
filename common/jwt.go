@@ -46,5 +46,15 @@ func ParseToken(tokenString string) (*jwt.Token, *Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
-	return token, claims, err
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// 检查 token 是否过期
+	if claims.ExpiresAt.Time.Before(time.Now()) {
+		return nil, nil, jwt.ErrTokenExpired
+	}
+
+	return token, claims, nil
 }
