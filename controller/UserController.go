@@ -4,6 +4,7 @@ import (
 	"clock/common"
 	"clock/model"
 	"clock/util"
+	"clock/vo"
 	"log"
 	"net/http"
 
@@ -107,6 +108,15 @@ func Login(ctx *gin.Context) {
 	//common.Success(ctx, "登录成功", 1)
 	//tel := user.Telephone
 	//setCookie(tel, ctx)
+}
+
+func UserInfo(c *gin.Context) {
+	curUser, _ := c.Get("curUser")
+	var reUser = vo.ReUser{
+		Name:      curUser.(model.User).Name,
+		Telephone: curUser.(model.User).Telephone,
+	}
+	c.JSON(200, reUser)
 }
 
 // 判断手机号是否存在

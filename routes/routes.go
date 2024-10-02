@@ -3,6 +3,7 @@ package routes
 import (
 	"clock/controller"
 	"clock/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,5 +17,6 @@ func CollectRoute(r *gin.Engine) *gin.Engine {
 	public.POST("/start", controller.Start)
 	public.POST("/end", controller.End)
 	public.GET("/rank", controller.Rank)
+	public.GET("/userInfo", controller.UserInfo)
 	return r
 }
