@@ -3,6 +3,7 @@ package controller
 import (
 	"clock/common"
 	"clock/model"
+	"clock/util"
 	"net/http"
 	"strconv"
 	"time"
@@ -24,13 +25,13 @@ func Start(c *gin.Context) {
 	var duration model.Duration
 	db.Where("tel = ? AND date = ? AND end_time = ?", tel, currentDate, "").First(&duration)
 	if duration.ID != 0 {
-		common.Response(c, http.StatusBadRequest, "正在计时中", "")
+		util.Response(c, http.StatusBadRequest, "正在计时中", "")
 		return
 	}
 	//绑定前端传入信息
 	var sJson startJson
 	if err := c.ShouldBindJSON(&sJson); err != nil {
-		common.Response(c, http.StatusInternalServerError, "接收Json出错", "")
+		util.Response(c, http.StatusInternalServerError, "接收Json出错", "")
 		return
 	}
 	newDur := model.Duration{
@@ -43,7 +44,7 @@ func Start(c *gin.Context) {
 	}
 
 	db.Create(&newDur)
-	common.Response(c, http.StatusOK, "开始打卡成功", "")
+	util.Response(c, http.StatusOK, "开始打卡成功", "")
 }
 
 func End(c *gin.Context) {
@@ -57,7 +58,7 @@ func End(c *gin.Context) {
 	db.Where("tel = ? AND date = ? AND end_time = ?", tel, currentDate, "").First(&duration)
 	// 提示未进行开始打卡
 	if duration.ID == 0 {
-		common.Response(c, http.StatusBadRequest, "未进行开始打卡", "")
+		util.Response(c, http.StatusBadRequest, "未进行开始打卡", "")
 		return
 	}
 	// 结算本次打卡时间

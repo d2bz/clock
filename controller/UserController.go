@@ -55,6 +55,7 @@ func Register(ctx *gin.Context) {
 		Name:      name,
 		Telephone: telephone,
 		Password:  string(hashedPassword), //将加密后的密码保存起来
+		Avatar:    "",
 	}
 	DB.Create(&newUser)
 	//返回结果
@@ -115,6 +116,7 @@ func UserInfo(c *gin.Context) {
 	var reUser = vo.ReUser{
 		Name:      curUser.(model.User).Name,
 		Telephone: curUser.(model.User).Telephone,
+		Avatar:    curUser.(model.User).Avatar,
 	}
 	c.JSON(200, reUser)
 }
