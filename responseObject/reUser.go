@@ -1,4 +1,4 @@
-package vo
+package responseObject
 
 type ReUser struct {
 	Name      string

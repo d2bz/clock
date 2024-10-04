@@ -3,7 +3,7 @@ package controller
 import (
 	"clock/common"
 	"clock/model"
-	"clock/vo"
+	"clock/responseObject"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -29,7 +29,7 @@ func Rank(c *gin.Context) {
 		return
 	}
 
-	rank := vo.Rank{
+	rank := responseObject.Rank{
 		RankMsg: simpleUsers,
 		Name:    curUser.(model.User).Name,
 		Date:    currentDate,
