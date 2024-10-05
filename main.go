@@ -4,7 +4,8 @@ package main
 import (
 	"clock/common"
 	"clock/controller"
-	"clock/routes"
+	"clock/routers"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,7 +23,7 @@ func main() {
 
 	controller.StartScheduledDeletion(db)
 
-	r = routes.CollectRoute(r)
+	r = routers.CollectRoute(r)
 
 	panic(r.Run(":8090"))
 }

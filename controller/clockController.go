@@ -45,6 +45,8 @@ func Start(c *gin.Context) {
 
 	db.Create(&newDur)
 	util.Response(c, http.StatusOK, "开始打卡成功", "")
+
+	// ToDo 将打卡信息传入redis
 }
 
 func End(c *gin.Context) {
@@ -86,6 +88,8 @@ func End(c *gin.Context) {
 		"msg":     "结束打卡成功",
 		"minutes": mString + "min",
 	})
+
+	// ToDo 更新redis打卡信息
 }
 
 // func Start(c *gin.Context) {
