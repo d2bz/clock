@@ -17,9 +17,9 @@ func Rank(c *gin.Context) {
 	var users []model.User
 	var simpleUsers []model.SimpleUser
 	if err := db.Select("users.name as username, SUM(durations.dur) AS time_total").
-		Joins("JOIN durations ON users.telephone = durations.tel").
+		Joins("JOIN durations ON users.user_id = durations.user_id").
 		Where("durations.date = ?", currentDate).
-		Group("users.telephone, users.name").
+		Group("users.user_id, users.name").
 		Order("time_total desc").
 		Find(&users).
 		Scan(&simpleUsers).Error; err != nil {

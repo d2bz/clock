@@ -11,7 +11,7 @@ import (
 var jwtKey = []byte("liudebaoliliuqin")
 
 type Claims struct {
-	Tel string
+	UID string
 	jwt.RegisteredClaims
 }
 
@@ -21,7 +21,7 @@ func ReleaseToken(user model.User) (string, error) {
 	expirationTime := time.Now().Add(7 * 24 * time.Hour)
 	claims := &Claims{
 		//自定义字段
-		Tel: user.Telephone,
+		UID: user.UserID,
 		//标准字段
 		RegisteredClaims: jwt.RegisteredClaims{
 			//过期时间

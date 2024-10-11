@@ -46,10 +46,10 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		//获取claims中的信息
-		tel := claims.Tel
+		uid := claims.UID
 		db := common.DB
 		var curUser model.User
-		db.Where("telephone = ?", tel).First(&curUser)
+		db.Where("user_id = ?", uid).First(&curUser)
 		//写入上下文
 		context.Set("curUser", curUser)
 		context.Next()

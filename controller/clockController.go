@@ -17,13 +17,13 @@ type startJson struct {
 
 func Start(c *gin.Context) {
 	curUser, _ := c.Get("curUser")
-	tel := curUser.(model.User).Telephone
+	uid := curUser.(model.User).UserID
 	db := common.GetDB()
 	currentDate := time.Now().Format("2006-01-02")
 	currentTime := time.Now().Format("15:04:05")
 	//判断是否已经进行开始打卡
 	var duration model.Duration
-	db.Where("tel = ? AND date = ? AND end_time = ?", tel, currentDate, "").First(&duration)
+	db.Where("user_id = ? AND date = ? AND end_time = ?", uid, currentDate, "").First(&duration)
 	if duration.ID != 0 {
 		util.Response(c, http.StatusBadRequest, "正在计时中", "")
 		return
@@ -35,7 +35,7 @@ func Start(c *gin.Context) {
 		return
 	}
 	newDur := model.Duration{
-		Tel:       tel,
+		UserID:    uid,
 		Date:      currentDate,
 		StartTime: currentTime,
 		EndTime:   "",
@@ -51,13 +51,13 @@ func Start(c *gin.Context) {
 
 func End(c *gin.Context) {
 	curUser, _ := c.Get("curUser")
-	tel := curUser.(model.User).Telephone
+	uid := curUser.(model.User).UserID
 	db := common.GetDB()
 	currentDate := time.Now().Format("2006-01-02")
 	currentTime := time.Now().Format("15:04:05")
 	// 查询当前用户当天是否有打卡记录
 	var duration model.Duration
-	db.Where("tel = ? AND date = ? AND end_time = ?", tel, currentDate, "").First(&duration)
+	db.Where("user_id = ? AND date = ? AND end_time = ?", uid, currentDate, "").First(&duration)
 	// 提示未进行开始打卡
 	if duration.ID == 0 {
 		util.Response(c, http.StatusBadRequest, "未进行开始打卡", "")

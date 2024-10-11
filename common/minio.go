@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -43,17 +44,17 @@ func MinioInit() {
 	}
 }
 
-func UploadFile(c *gin.Context) (fileUrl string, errString string) {
+func UploadFile(c *gin.Context) (string, error) {
 	// 从请求中获取文件
 	file, err := c.FormFile("file")
 	if err != nil {
-		return "", "File is required"
+		return "", errors.New("file is required")
 	}
 
 	// 打开文件
 	src, err := file.Open()
 	if err != nil {
-		return "", "Unable to open file"
+		return "", errors.New("unable to open file")
 	}
 	defer src.Close()
 
@@ -62,10 +63,10 @@ func UploadFile(c *gin.Context) (fileUrl string, errString string) {
 	contentType := file.Header.Get("Content-Type")
 	_, err = minioClient.PutObject(context.Background(), bucketName, objectName, src, file.Size, minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
-		return "", "Unable to upload file"
+		return "", errors.New("unable to upload file")
 	}
 
 	// 构建文件的 URL
 	fileURL := fmt.Sprintf("http://%s/%s/%s", minioEndpoint, bucketName, objectName)
-	return fileURL, ""
+	return fileURL, nil
 }
