@@ -13,6 +13,7 @@ func main() {
 	//初始服务器引擎
 	r := gin.Default()
 
+	common.InitRDB()
 	db := common.InitDB()
 	//获取底层数据库连接
 	sqlDB, err := db.DB()

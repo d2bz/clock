@@ -1,6 +1,7 @@
 package userHandler
 
 import (
+	"clock/Redis"
 	"clock/common"
 	"clock/model"
 	"clock/util"
@@ -22,11 +23,11 @@ func Register(ctx *gin.Context) {
 
 	//数据验证
 	if len(telephone) != 11 {
-		common.Error(ctx, "手机号必须为11位")
+		util.Response(ctx, http.StatusBadRequest, "手机号必须为11位", "")
 		return
 	}
 	if len(password) < 6 {
-		common.Error(ctx, "密码不能少于6位")
+		util.Response(ctx, http.StatusBadRequest, "密码不能少于6位", "")
 		return
 	}
 
@@ -37,14 +38,14 @@ func Register(ctx *gin.Context) {
 	log.Println(name, telephone, password)
 	//判断手机号是否存在
 	if isTelephoneExist(DB, telephone) {
-		common.Error(ctx, "用户已经存在")
+		util.Response(ctx, http.StatusBadRequest, "用户已经存在", "")
 		return
 	}
 	//如果用户不存在，则创建用户
 	//对密码进行加密
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		common.Error(ctx, "加密错误")
+		util.Response(ctx, http.StatusInternalServerError, "密码加密错误", err.Error())
 		return
 	}
 
@@ -62,8 +63,11 @@ func Register(ctx *gin.Context) {
 		Avatar:    "",
 	}
 	DB.Create(&newUser)
-
-	common.Success(ctx, "注册成功", 1)
+	err = Redis.SetUserInfo(newUser)
+	if err != nil {
+		util.Response(ctx, http.StatusInternalServerError, "redis userinfo set出错", err.Error())
+	}
+	util.Response(ctx, http.StatusOK, "注册成功", "")
 }
 
 // Login 登录功能
@@ -74,19 +78,27 @@ func Login(ctx *gin.Context) {
 	password := ctx.PostForm("password")
 
 	if len(password) < 6 {
-		common.Error(ctx, "密码不能少于6位")
+		util.Response(ctx, http.StatusBadRequest, "密码不能少于6位", "")
 		return
 	}
+
 	//判断用户是否存在
 	var user model.User
-	DB.Where("telephone = ?", tel).First(&user)
-	if user.ID == 0 {
-		common.Error(ctx, "用户不存在")
-		return
+	temp, err := Redis.GetUserInfo(tel)
+	if err == nil {
+		user = temp
+	} else {
+		DB.Where("telephone = ?", tel).First(&user)
+
+		if user.ID == 0 {
+			util.Response(ctx, http.StatusBadRequest, "用户不存在", "")
+			return
+		}
 	}
+
 	//判断密码是否正确
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		common.Error(ctx, "密码错误")
+		util.Response(ctx, http.StatusBadRequest, "密码错误", "")
 		return
 	}
 
