@@ -24,7 +24,7 @@ func main() {
 
 	controller.StartScheduledDeletion(db)
 
-	r = routers.CollectRoute(r)
+	routers.CollectRouter(r)
 
 	panic(r.Run(":8090"))
 }

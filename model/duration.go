@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Duration struct {
 	gorm.Model
-	UserID    string `gorm:"type:varchar(11);not null"`
+	UserID    string `gorm:"not null"`
 	Date      string `gorm:"type:varchar(100);not null"`
 	StartTime string `gorm:"type:varchar(100)"`
 	EndTime   string `gorm:"type:varchar(100)"`

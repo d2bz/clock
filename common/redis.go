@@ -6,7 +6,7 @@ var Rdb *redis.Client
 
 func InitRDB() {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "139.9.103.236",
+		Addr:     "139.9.103.236:6379",
 		Password: "clock1234",
 		DB:       0,
 	})

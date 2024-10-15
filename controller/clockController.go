@@ -72,7 +72,7 @@ func End(c *gin.Context) {
 	//redis初步筛选
 	flag, err := Redis.GetIsClock(uid)
 	if !flag && err == redis.Nil {
-		util.Response(c, http.StatusBadRequest, "未进行开始打卡", "")
+		util.Response(c, http.StatusBadRequest, "未进行开始打卡", "redis返回")
 		return
 	}
 
